@@ -24,6 +24,7 @@ class MyTcpServer : public QTcpServer {
   void checkNumbers();
   void sendAll(QList<int> ports, QString message);
   void chekUsers();
+  void deleteUser(int port);
 
  public slots:
   void slotNewConnection();

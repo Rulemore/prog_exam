@@ -87,7 +87,8 @@ QByteArray MyTcpServer::parse(QByteArray array, QTcpSocket *currTcpSocket) {
     qDebug() << port;
     return addNewUser(login, port);
   } else if (command == "break" && commandParts.size() == 1) {
-    return "Выход из комнаты\n";
+    deleteUser(port);
+    return "\n";
   } else if (command == "stats" && commandParts.size() == 1) {
     return stats(port);
   } else if (command == "choice" && commandParts.size() == 2) {
@@ -302,4 +303,17 @@ void MyTcpServer::breakConnection(int port) {
       socket->close();
     }
   }
+}
+
+void MyTcpServer::deleteUser(int port) {
+  QSqlQuery query(db);
+  QString queryString =
+      "DELETE FROM users "
+      "WHERE port = :port;";
+  query.prepare(queryString);
+  query.bindValue(":port", port);
+  if (!query.exec()) {
+    qDebug() << "Error executing query:" << query.lastError().text();
+  }
+  breakConnection(port);
 }
